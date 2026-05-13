@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://bwmg6wo00x5gy"]
+
+[ext_resource type="Texture2D" uid="uid://b64br085ib73r" path="res://mat/round.png" id="1_xhfnw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xhfnw"]
+
+[node name="Player" type="CharacterBody2D" unique_id=1386097706]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1758082994]
+shape = SubResource("CircleShape2D_xhfnw")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1474251169]
+texture = ExtResource("1_xhfnw")
+
+[node name="ShootTimer" type="Timer" parent="." unique_id=1867605336]
+wait_time = 0.4
+autostart = true
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1064576720]
+position_smoothing_enabled = true
