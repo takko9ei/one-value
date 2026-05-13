@@ -1,0 +1,41 @@
+# Godot 4+ specific ignores
+.godot/
+*.translation
+
+# Exported games
+*.exe
+*.mac
+*.app/
+*.x86_64
+*.zip
+*.apk
+*.aab
+
+# Mono-specific ignores (if using C#)
+.mono/
+data_*/
+mono_crash.*.json
+
+# C# / .NET
+.vs/
+*.csproj.user
+*.sln.user
+bin/
+obj/
+
+# Android specific ignores
+/android/
+
+# System/OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup/Temp
+*~
+*.bak
+*.tmp
+*.swp
+
+# Agent/AI
+agent.md
