@@ -1,9 +1,73 @@
 [gd_scene format=3 uid="uid://beg37dtcbniyu"]
 
+[ext_resource type="Texture2D" uid="uid://chsd15snc4gas" path="res://mat/background.png" id="1_x4av3"]
+[ext_resource type="PackedScene" uid="uid://bctdd3u8oshfq" path="res://Obstacle.tscn" id="2_x4av3"]
+[ext_resource type="PackedScene" uid="uid://bwmg6wo00x5gy" path="res://Player.tscn" id="3_rpqi1"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_1305s"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_x4av3"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3mqji"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_rpqi1"]
+
 [node name="Main" type="Node2D" unique_id=392495462]
 
-[node name="Background" type="Node2D" parent="." unique_id=1027010510]
-
-[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1823507665]
+[node name="Background" type="Sprite2D" parent="." unique_id=77033047]
+position = Vector2(995, 585.5)
+scale = Vector2(1.0364584, 1.0842594)
+texture = ExtResource("1_x4av3")
 
 [node name="Obstacles" type="Node2D" parent="." unique_id=731054298]
+
+[node name="Obstacle" parent="Obstacles" unique_id=1741468574 instance=ExtResource("2_x4av3")]
+position = Vector2(248.00002, 203)
+scale = Vector2(0.39565784, 0.27585867)
+
+[node name="Obstacle2" parent="Obstacles" unique_id=375372383 instance=ExtResource("2_x4av3")]
+position = Vector2(1516, 816)
+scale = Vector2(0.62852615, 0.5092218)
+
+[node name="Obstacle3" parent="Obstacles" unique_id=798664471 instance=ExtResource("2_x4av3")]
+position = Vector2(1237, 257)
+scale = Vector2(0.3293664, 0.18156895)
+
+[node name="Obstacle4" parent="Obstacles" unique_id=1724769956 instance=ExtResource("2_x4av3")]
+position = Vector2(625, 901)
+scale = Vector2(0.36321568, 0.21177131)
+
+[node name="Obstacle5" parent="Obstacles" unique_id=253461548 instance=ExtResource("2_x4av3")]
+position = Vector2(275, 583)
+scale = Vector2(0.28969467, 0.19603679)
+
+[node name="Obstacle6" parent="Obstacles" unique_id=425028752 instance=ExtResource("2_x4av3")]
+position = Vector2(1042, 583)
+scale = Vector2(0.5963069, 0.4575394)
+
+[node name="Obstacle7" parent="Obstacles" unique_id=1813737172 instance=ExtResource("2_x4av3")]
+position = Vector2(1708, 193)
+scale = Vector2(0.4317742, 0.40678725)
+
+[node name="Walls" type="StaticBody2D" parent="." unique_id=414294935]
+scale = Vector2(1.0363469, 1.0838358)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls" unique_id=1135018670]
+rotation = 1.5707964
+shape = SubResource("WorldBoundaryShape2D_1305s")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Walls" unique_id=1726486693]
+rotation = 3.1415927
+shape = SubResource("WorldBoundaryShape2D_x4av3")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Walls" unique_id=1979737983]
+position = Vector2(1920, 1080)
+shape = SubResource("WorldBoundaryShape2D_3mqji")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Walls" unique_id=1034160247]
+position = Vector2(1920, 1080)
+rotation = -1.5707964
+shape = SubResource("WorldBoundaryShape2D_rpqi1")
+
+[node name="Player" parent="." unique_id=1386097706 instance=ExtResource("3_rpqi1")]
+position = Vector2(977, 381)

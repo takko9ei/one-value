@@ -7,7 +7,7 @@ extends CharacterBody2D
 var hp: int = 0
 var stamina: int = 0
 
-const BASE_SPEED: float = 300.0
+const BASE_SPEED: float = 500.0
 const DASH_MULTIPLIER: float = 3.0
 const DASH_DURATION: float = 0.15
 const DASH_COST: int = 1

@@ -1,10 +1,15 @@
 [gd_scene format=3 uid="uid://bwmg6wo00x5gy"]
 
+[ext_resource type="Script" uid="uid://b27asrxooi7ps" path="res://Player.gd" id="1_kpjcp"]
 [ext_resource type="Texture2D" uid="uid://b64br085ib73r" path="res://mat/round.png" id="1_xhfnw"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xhfnw"]
+radius = 128.0039
 
 [node name="Player" type="CharacterBody2D" unique_id=1386097706]
+position = Vector2(-1.9999998, 0.99999994)
+scale = Vector2(0.2, 0.2)
+script = ExtResource("1_kpjcp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1758082994]
 shape = SubResource("CircleShape2D_xhfnw")
@@ -18,3 +23,4 @@ autostart = true
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1064576720]
 position_smoothing_enabled = true
+position_smoothing_speed = 10.0

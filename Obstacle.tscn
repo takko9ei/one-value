@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://bctdd3u8oshfq"]
+
+[ext_resource type="Texture2D" uid="uid://x8gs6msut5ej" path="res://mat/trapezoid.png" id="1_nfn2k"]
+
+[node name="Obstacle" type="StaticBody2D" unique_id=1741468574]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=526209779]
+texture = ExtResource("1_nfn2k")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=85473246]
+position = Vector2(-0.6000061, 0.3999939)
+scale = Vector2(1.0029297, 0.9980468)
+polygon = PackedVector2Array(-128, 127, 128, 128, 50, -128, -51, -128)
