@@ -4,20 +4,27 @@
 本作是一款基于“零和资源分配”机制的俯视角射击游戏（类《土豆兄弟》）。
 全局拥有固定的“源力点（SP）”（如100点），玩家在升级或调整时，必须在不同的属性（如攻击、生命、移速，甚至是敌人的削弱属性）之间进行权衡和再分配。所有的数值变化均受限于这个零和池。
 
-## 二、 节点树与脚本映射 (Node Tree & Scripts)
+## 二、 项目结构与节点映射 (Project Structure & Node Mapping)
+
+**目录规范**：
+- `script/`：存放所有的核心 GDScript 逻辑代码。
+- `prefab/`：存放所有的场景预制体（如 `.tscn` 文件）。
+- `mat/`：存放材质与资源。
+
+**核心实体映射**：
 - **GameManager (Autoload/单例)**
-  - 脚本: `GameManager.gd`
+  - 脚本: `script/GameManager.gd`
   - 职责: 存储全局状态（源力点分配字典 `stats`），处理分配逻辑，广播状态变更信号。
 - **Player (CharacterBody2D)**
-  - 脚本: `Player.gd`
+  - 场景: `prefab/Player.tscn` | 脚本: `script/Player.gd`
   - 包含: `CollisionShape2D`, `Sprite2D`, `ShootTimer`, `Camera2D`
   - 职责: 监听单例更新自身属性，处理输入移动、冲刺。
 - **EnemyBase (CharacterBody2D)**
-  - 脚本: `EnemyBase.gd`
+  - 场景: `prefab/EnemyBase.tscn` | 脚本: `script/EnemyBase.gd`
   - 包含: `CollisionPolygon2D`, `Sprite2D`, `Hitbox(Area2D)`
   - 职责: 计算被削减后的运行时属性，追踪玩家，并在碰撞时造成伤害。
 - **PlayerProjectile (Area2D)**
-  - 脚本: `PlayerProjectile.gd`
+  - 场景: `prefab/PlayerProjectile.tscn` | 脚本: `script/PlayerProjectile.gd`
   - 包含: `Sprite2D`, `CollisionShape2D` (内部动态生成 `Timer` 和 `VisibleOnScreenNotifier2D`)
   - 职责: 沿给定方向直线运动，检测碰撞并触发伤害或销毁。
 

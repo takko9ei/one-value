@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://detwna7w2k3wd"]
 
 [ext_resource type="Texture2D" uid="uid://c8suvcnje2xlb" path="res://mat/triangle.png" id="1_gjhpl"]
-[ext_resource type="Script" uid="uid://dr6ru4wetaygl" path="res://EnemyBase.gd" id="1_u4ydw"]
+[ext_resource type="Script" uid="uid://dr6ru4wetaygl" path="res://script/EnemyBase.gd" id="1_u4ydw"]
 
 [node name="EnemyBase" type="CharacterBody2D" unique_id=354812716]
 scale = Vector2(0.295, 0.295)

@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://beg37dtcbniyu"]
 
 [ext_resource type="Texture2D" uid="uid://chsd15snc4gas" path="res://mat/background.png" id="1_x4av3"]
-[ext_resource type="PackedScene" uid="uid://bctdd3u8oshfq" path="res://Obstacle.tscn" id="2_x4av3"]
-[ext_resource type="PackedScene" uid="uid://dupmuukt1o8t8" path="res://walls.tscn" id="3_rf2cd"]
-[ext_resource type="PackedScene" uid="uid://bwmg6wo00x5gy" path="res://Player.tscn" id="3_rpqi1"]
-[ext_resource type="PackedScene" uid="uid://detwna7w2k3wd" path="res://EnemyBase.tscn" id="4_uxrcv"]
+[ext_resource type="PackedScene" uid="uid://bctdd3u8oshfq" path="res://prefab/Obstacle.tscn" id="2_x4av3"]
+[ext_resource type="PackedScene" uid="uid://dupmuukt1o8t8" path="res://prefab/walls.tscn" id="3_rf2cd"]
+[ext_resource type="PackedScene" uid="uid://bwmg6wo00x5gy" path="res://prefab/Player.tscn" id="3_rpqi1"]
+[ext_resource type="PackedScene" uid="uid://detwna7w2k3wd" path="res://prefab/EnemyBase.tscn" id="4_uxrcv"]
 
 [node name="Main" type="Node2D" unique_id=392495462]
 
