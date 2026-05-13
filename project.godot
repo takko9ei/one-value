@@ -19,11 +19,15 @@ config/icon="res://icon.svg"
 
 GameManager="*uid://dwnh7pf6mt83g"
 
+[global_group]
+
+player=""
+
 [layer_names]
 
 2d_physics/layer_1="Player"
 2d_physics/layer_2="Enemy"
-2d_physics/layer_3="Environment"
+2d_physics/layer_3="Environment/Obstacles"
 
 [physics]
 

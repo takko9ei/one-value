@@ -2,6 +2,26 @@ class_name Player
 extends CharacterBody2D
 
 # =========================================================
+# 【Agent Context】 节点结构说明
+# =========================================================
+# 本脚本挂载于 Player (CharacterBody2D) 根节点上。
+# 场景包含以下子节点，便于后续迭代获取上下文：
+# - Player (CharacterBody2D) [Root]
+#   ├── CollisionShape2D (CollisionShape2D) : 碰撞体
+#   ├── Sprite2D (Sprite2D)                 : 玩家贴图/动画
+#   ├── ShootTimer (Timer)                  : 控制射击频率的计时器
+#   └── Camera2D (Camera2D)                 : 玩家跟随相机
+# =========================================================
+
+# =========================================================
+# 节点引用 (Nodes)
+# =========================================================
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
+@onready var sprite: Sprite2D = $Sprite2D
+@onready var shoot_timer: Timer = $ShootTimer
+@onready var camera: Camera2D = $Camera2D
+
+# =========================================================
 # 属性定义
 # =========================================================
 var hp: int = 0
@@ -58,8 +78,16 @@ func _handle_dash(delta: float) -> void:
 		# 注意：此处仅扣除本地 stamina。如果后续设计需要全局保存消耗的体力，应该在此处反向调用 GameManager 更新状态。
 
 func _handle_movement() -> void:
-	# 使用 get_vector 获取 WASD 输入 (依赖项目设置中 ui_* 的按键映射)
-	var input_vector: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	# 获取方向键输入 (ui_*)
+	var ui_input: Vector2 = Input.get_vector("ui_left", "ui_right", "ui_up", "ui_down")
+	
+	# 获取 WASD 物理按键输入
+	var wasd_x: float = float(Input.is_physical_key_pressed(KEY_D)) - float(Input.is_physical_key_pressed(KEY_A))
+	var wasd_y: float = float(Input.is_physical_key_pressed(KEY_S)) - float(Input.is_physical_key_pressed(KEY_W))
+	var wasd_input: Vector2 = Vector2(wasd_x, wasd_y)
+	
+	# 合并两种输入，并限制向量长度最大为 1.0，防止斜向或叠加移动过快
+	var input_vector: Vector2 = (ui_input + wasd_input).limit_length(1.0)
 	
 	var current_speed: float = BASE_SPEED
 	if _is_dashing:

@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://detwna7w2k3wd"]
+
+[ext_resource type="Texture2D" uid="uid://c8suvcnje2xlb" path="res://mat/triangle.png" id="1_gjhpl"]
+[ext_resource type="Script" uid="uid://dr6ru4wetaygl" path="res://EnemyBase.gd" id="1_u4ydw"]
+
+[node name="EnemyBase" type="CharacterBody2D" unique_id=354812716]
+scale = Vector2(0.295, 0.295)
+collision_layer = 2
+collision_mask = 6
+script = ExtResource("1_u4ydw")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=977205136]
+position = Vector2(0, -41)
+texture = ExtResource("1_gjhpl")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="." unique_id=595046434]
+polygon = PackedVector2Array(-2, -167, -128, 86, 128, 87)
+
+[node name="Hitbox" type="Area2D" parent="." unique_id=1062332520]
+collision_layer = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hitbox" unique_id=1255431287]
+polygon = PackedVector2Array(-1, -178, -138, 92, 138, 92)

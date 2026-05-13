@@ -1,10 +1,16 @@
 [gd_scene format=3 uid="uid://4w4ra5m4u7kt"]
 
+[ext_resource type="Script" uid="uid://ds1kfgvlfut3u" path="res://PlayerProjectile.gd" id="1_jbg7j"]
+[ext_resource type="Texture2D" uid="uid://c0e2pb7s3wusl" path="res://mat/x.png" id="2_wix7r"]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_jtae1"]
+radius = 133.01503
 
 [node name="PlayerProjectile" type="Area2D" unique_id=222098584]
+script = ExtResource("1_jbg7j")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=28074984]
+texture = ExtResource("2_wix7r")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1946338895]
 shape = SubResource("CircleShape2D_jtae1")

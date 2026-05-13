@@ -2,15 +2,9 @@
 
 [ext_resource type="Texture2D" uid="uid://chsd15snc4gas" path="res://mat/background.png" id="1_x4av3"]
 [ext_resource type="PackedScene" uid="uid://bctdd3u8oshfq" path="res://Obstacle.tscn" id="2_x4av3"]
+[ext_resource type="PackedScene" uid="uid://dupmuukt1o8t8" path="res://walls.tscn" id="3_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://bwmg6wo00x5gy" path="res://Player.tscn" id="3_rpqi1"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_1305s"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_x4av3"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_3mqji"]
-
-[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_rpqi1"]
+[ext_resource type="PackedScene" uid="uid://detwna7w2k3wd" path="res://EnemyBase.tscn" id="4_uxrcv"]
 
 [node name="Main" type="Node2D" unique_id=392495462]
 
@@ -49,25 +43,15 @@ scale = Vector2(0.5963069, 0.4575394)
 position = Vector2(1708, 193)
 scale = Vector2(0.4317742, 0.40678725)
 
-[node name="Walls" type="StaticBody2D" parent="." unique_id=414294935]
-scale = Vector2(1.0363469, 1.0838358)
+[node name="Walls" parent="." unique_id=1638335007 instance=ExtResource("3_rf2cd")]
+collision_layer = 4
+collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Walls" unique_id=1135018670]
-rotation = 1.5707964
-shape = SubResource("WorldBoundaryShape2D_1305s")
-
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="Walls" unique_id=1726486693]
-rotation = 3.1415927
-shape = SubResource("WorldBoundaryShape2D_x4av3")
-
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="Walls" unique_id=1979737983]
-position = Vector2(1920, 1080)
-shape = SubResource("WorldBoundaryShape2D_3mqji")
-
-[node name="CollisionShape2D4" type="CollisionShape2D" parent="Walls" unique_id=1034160247]
-position = Vector2(1920, 1080)
-rotation = -1.5707964
-shape = SubResource("WorldBoundaryShape2D_rpqi1")
-
-[node name="Player" parent="." unique_id=1386097706 instance=ExtResource("3_rpqi1")]
+[node name="Player" parent="." unique_id=1386097706 groups=["player"] instance=ExtResource("3_rpqi1")]
 position = Vector2(977, 381)
+
+[node name="EnemyBase" parent="." unique_id=354812716 instance=ExtResource("4_uxrcv")]
+position = Vector2(852, 977)
+
+[node name="EnemyBase2" parent="." unique_id=889284932 instance=ExtResource("4_uxrcv")]
+position = Vector2(1375, 744)

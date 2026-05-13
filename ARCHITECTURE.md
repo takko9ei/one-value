@@ -1,0 +1,59 @@
+# 零和分配射击游戏 - 架构白皮书与 Agent 上下文
+
+## 一、 核心概念 (Core Concept)
+本作是一款基于“零和资源分配”机制的俯视角射击游戏（类《土豆兄弟》）。
+全局拥有固定的“源力点（SP）”（如100点），玩家在升级或调整时，必须在不同的属性（如攻击、生命、移速，甚至是敌人的削弱属性）之间进行权衡和再分配。所有的数值变化均受限于这个零和池。
+
+## 二、 节点树与脚本映射 (Node Tree & Scripts)
+- **GameManager (Autoload/单例)**
+  - 脚本: `GameManager.gd`
+  - 职责: 存储全局状态（源力点分配字典 `stats`），处理分配逻辑，广播状态变更信号。
+- **Player (CharacterBody2D)**
+  - 脚本: `Player.gd`
+  - 包含: `CollisionShape2D`, `Sprite2D`, `ShootTimer`, `Camera2D`
+  - 职责: 监听单例更新自身属性，处理输入移动、冲刺。
+- **EnemyBase (CharacterBody2D)**
+  - 脚本: `EnemyBase.gd`
+  - 包含: `CollisionPolygon2D`, `Sprite2D`, `Hitbox(Area2D)`
+  - 职责: 计算被削减后的运行时属性，追踪玩家，并在碰撞时造成伤害。
+- **PlayerProjectile (Area2D)**
+  - 脚本: `PlayerProjectile.gd`
+  - 包含: `Sprite2D`, `CollisionShape2D` (内部动态生成 `Timer` 和 `VisibleOnScreenNotifier2D`)
+  - 职责: 沿给定方向直线运动，检测碰撞并触发伤害或销毁。
+
+## 三、 数据流向 (Data Flow)
+**GameManager 是唯一的真理来源 (Single Source of Truth)。**
+1. **状态更新**：任何对数值的修改（加点、减点、Debuff）必须直接调用 `GameManager` 提供的方法。
+2. **状态读取**：其他所有实体节点（Player, Enemy, Projectile）只能通过读取 `GameManager.stats` 字典来初始化属性。
+3. **响应式更新**：实体必须连接 `GameManager.stats_updated` 信号。当玩家在 UI 中调整分配点数时，场上存在的实体应自动重新计算运行时属性。
+
+## 四、 物理与碰撞矩阵 (Physics & Collision Matrix)
+
+| 实体 | 所在层 (Layer) | 碰撞遮罩 (Mask) - 会撞到什么 | 说明 |
+| :--- | :--- | :--- | :--- |
+| **Player** (CharacterBody2D) | **1** (Player) | **3** (Env) | 玩家属于层1。检测环境防穿墙。**不勾选 2**，使其能直接穿过敌人而不被阻挡。 |
+| **Enemy** (CharacterBody2D) | **2** (Enemy) | **2** (Enemy), **3** (Env) | 敌人属于层2。互相挤压、被墙壁阻挡。**不勾选 1**，使其不会物理阻挡/推动玩家。 |
+| **Enemy Hitbox** (Area2D) | *(无/默认)* | **1** (Player) | 独立于物理碰撞！这是专门用来检测玩家进入以造成伤害的唯一途径。 |
+| **PlayerProjectile** (Area2D)| **4** (PlayerBullet)| **2** (Enemy), **3** (Env) | 玩家子弹层。**绝对不能**勾选 Mask 1，否则会一发射就击中玩家自己。 |
+
+*(注：建议在 Godot 的 Project Settings -> Layer Names -> 2D Physics 中将 1-4 层命名为 `Player`, `Enemy`, `Environment`, `PlayerBullet` 以规范化开发)*
+
+## 五、 通信协议 (Communication Protocol)
+- **伤害传递**：
+  - 发起方（如子弹、Hitbox）检测到目标后，**必须**检查目标是否拥有特定方法：`if body.has_method("take_damage"):`
+  - 接受方（玩家、敌人）**必须**实现 `func take_damage(amount: float) -> void:` 方法。
+- **属性同步**：
+  - 必须使用信号：`GameManager.stats_updated.connect(_sync_stats)`
+  - 绝对不要在 `_process` 中轮询检查 GameManager 的属性。
+- **获取目标引用**：
+  - 利用 Godot 的 Node Group 系统，如 `get_tree().get_nodes_in_group("player")` 获取玩家引用，禁止传递硬引用或绝对路径。
+
+## 六、 AI 编码规范 (Vibe Coding Rules)
+在后续的所有开发和代码生成中，必须严格遵循以下原则：
+1. **GDScript 2.0 规范**：全程使用严格类型提示（如 `var hp: int`, `-> void`）。
+2. **禁止硬编码路径**：绝对禁止使用 `get_node("../../Node")` 这种脆弱的树状依赖。
+3. **依赖解耦**：
+   - 外部参数：通过 `@export` 暴露给编辑器调整。
+   - 内部子节点：必须在文件顶部定义 `@onready var child: Node = $Child` 并附带完整的 `【Agent Context】` 注释。
+   - 全局跨节点交互：优先通过 Group 获取对象引用，或通过全局信号（Signal Bus / GameManager）进行跨系统交互。
+4. **防御性编程**：在访问数组元素（如获取第一个玩家）前，必须验证数组是否为空（`is_empty()` 或 `size() > 0`）。
