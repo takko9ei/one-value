@@ -14,15 +14,19 @@
 **核心实体映射**：
 - **GameManager (Autoload/单例)**
   - 脚本: `script/GameManager.gd`
-  - 职责: 存储全局状态（源力点分配字典 `stats`），处理分配逻辑，广播状态变更信号。
+  - 职责: 存储全局状态（源力点分配字典 `stats`，最大点数 `MAX_TOTAL_POINTS = 100`），处理分配逻辑，广播状态变更信号。控制整个游戏的生命周期与场景跳转逻辑（使用 `call_deferred` 确保物理层安全），如 `start_new_game`, `next_level`, `retry_current_level` 等。
+- **LevelBase & LevelController (关卡基类与控制器)**
+  - 场景: `scene/LevelBase.tscn` | 脚本: `script/LevelController.gd`
+  - 包含: `SpawnTimer (Timer)`, `SpawnPoints (Node2D + Marker2D)` 以及对地图障碍物、玩家、UI 的基础封装。
+  - 职责: 所有的具体关卡都派生自 `LevelBase`。`LevelController` 负责控制敌人的波次与生成，监听并统计所有生成的敌人的 `died` 信号。达到击杀目标后，自动停止刷怪并通知 `GameManager` 进入下一关。
 - **Player (CharacterBody2D)**
   - 场景: `prefab/Player.tscn` | 脚本: `script/Player.gd`
   - 包含: `CollisionShape2D`, `Sprite2D`, `ShootTimer`, `Camera2D`, `Muzzle(Marker2D)`, `HealthBar(ProgressBar)`, `StaminaBar(ProgressBar)`
-  - 职责: 监听单例更新自身属性，动态同步悬浮生命值与耐力值进度条。处理输入移动、冲刺。包含精准的自动索敌逻辑（计算从 `Muzzle` 到活着的敌人的方向），并实现多发子弹的扇形发射算法。
+  - 职责: 监听单例更新自身属性，动态同步悬浮生命值与耐力值进度条。处理输入移动、冲刺。包含精准的自动索敌逻辑（计算从 `Muzzle` 到活着的敌人的方向），并实现多发子弹的扇形发射算法。玩家死亡后会触发同一场景中的 `GameOverUI` 的显示。
 - **EnemyBase (CharacterBody2D)**
   - 场景: `prefab/EnemyBase.tscn` | 脚本: `script/EnemyBase.gd`
   - 包含: `CollisionPolygon2D`, `Sprite2D`, `Hitbox(Area2D)`, `ProgressBar(ProgressBar)`
-  - 职责: 计算被削减后的运行时属性，追踪玩家，在碰撞时造成伤害，并实时将扣血反馈至头顶悬浮血条。
+  - 职责: 计算被削减后的运行时属性，追踪玩家，在碰撞时造成伤害，并实时将扣血反馈至头顶悬浮血条。血量归零时发射 `died` 信号供外部统计，并自我销毁。
 - **PlayerProjectile (Area2D)**
   - 场景: `prefab/PlayerProjectile.tscn` | 脚本: `script/PlayerProjectile.gd`
   - 包含: `Sprite2D`, `CollisionShape2D` (内部动态生成生命周期 `Timer`)
@@ -30,15 +34,15 @@
 - **GameOverUI (CanvasLayer)**
   - 场景: `prefab/GameOverUI.tscn` | 脚本: `script/GameOverUI.gd`
   - 包含: `RestartButton (Button)`, `BackButton (Button)`
-  - 职责: 监听玩家死亡，控制全局时停 (`get_tree().paused = true`) 并显示交互菜单。节点模式必须设为 `PROCESS_MODE_ALWAYS` 以豁免时停。包含基于 `KEY_R` 的物理快捷键光速重开逻辑。
+  - 职责: 监听玩家死亡，控制全局时停 (`get_tree().paused = true`) 并显示交互菜单。节点模式必须设为 `PROCESS_MODE_ALWAYS` 以豁免时停。包含基于 `KEY_R` 的物理快捷键光速重开逻辑。重启后会调用 `GameManager.retry_current_level()` 退回 `Allocation UI` 重置加点。
 - **MainMenu (Control)**
-  - 场景: `prefab/MainMenu.tscn` | 脚本: `script/MainMenu.gd`
+  - 场景: `scene/MainMenu.tscn` | 脚本: `script/MainMenu.gd`
   - 包含: `StartButton`, `QuitButton`
   - 职责: 游戏标题画面，处理基础流程控制，负责调用 `GameManager.start_new_game()` 进入游戏。
 - **AllocationUI (Control)**
-  - 场景: `prefab/AllocationUI.tscn` | 脚本: `script/AllocationUI.gd`
+  - 场景: `scene/AllocationUI.tscn` | 脚本: `script/AllocationUI.gd`
   - 包含: `LevelNameLabel`, `PointsLabel`, `SliderContainer (内含 7 个与 stats 字典同名的 HSlider)`
-  - 职责: 游戏内的零和资源分配终端。利用 `slider.name` 动态遍历并一键绑定信号。内置 **UI 橡皮筋拉回机制**：当加点受限于 `total_pool` 导致底层拒绝累加时，强制调用 `set_value_no_signal` 覆写游标，消除数据与视觉的脱节现象。
+  - 职责: 游戏内的零和资源分配终端。内置 **UI 橡皮筋拉回机制**以防止加点超出上限。同时承担着当前阶段命名的展示（Stage1: Swarm, Stage2: Golem 等）。
 
 ## 三、 数据流向与零和分配字典 (Data Flow & Stats Dictionary)
 **GameManager 是唯一的真理来源 (Single Source of Truth)。**
@@ -49,10 +53,10 @@
 **当前 `stats` 字典的规范映射及其影响**：
 - `hp`: 提升玩家最大血量（计算公式：`100.0 + hp * 20.0`）。`Player` 初始化时满血，受击调用 `take_damage` 扣减。
 - `atk`: 提升玩家基础攻击力（计算公式：`10.0 + atk * 2.0`）。此数值会动态赋予发射出的 `PlayerProjectile`。
-- `stamina`: 提升玩家最大耐力（计算公式：`2 + floori(stamina / 5.0)`）。
+- `stamina`: 提升玩家最大耐力（计算公式：`2 + floori(stamina / 20.0)`）。
   - **冲刺机制 (Dash)**：按下 `dash` 键消耗 1 点耐力，获得 `2.5` 倍移速持续 `0.15` 秒。
   - **耐力恢复**：每 `1.5` 秒自动恢复 `1` 点耐力直至上限。
-- `projectiles`: 提升多重投射物数量。**每 5 点增加 1 发额外子弹**。`Player.gd` 会自动启用**扇形散布算法**，均匀发射多发子弹。
+- `projectiles`: 提升多重投射物数量。**每 20 点增加 1 发额外子弹**。`Player.gd` 会自动启用**扇形散布算法**，均匀发射多发子弹。
 - `enemy_slow`: 敌人减速 Debuff。乘区公式 `1.0 - mini(0.8, slow / 100.0)`，**硬上限 80%** 防止怪物倒退。
 - `enemy_atk_debuff`: 敌人攻击力削弱 Debuff。乘区公式 `1.0 - mini(0.8, atk_debuff / 100.0)`，**硬上限 80%** 防止攻击力变负数反向治疗玩家。
 - `enemy_def_debuff`: 敌人防御力削减（破甲）。

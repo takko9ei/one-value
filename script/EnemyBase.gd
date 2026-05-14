@@ -61,21 +61,18 @@ func _ready() -> void:
 		hitbox.body_entered.connect(_on_hitbox_body_entered)
 
 func _sync_stats() -> void:
-	# Retrieve stats safely, defaulting to 0.0 if not found
-	var slow_debuff: float = GameManager.stats.get("enemy_slow", 0.0) as float
-	var atk_debuff: float = GameManager.stats.get("enemy_atk_debuff", 0.0) as float
-	var def_debuff: float = GameManager.stats.get("enemy_def_debuff", 0.0) as float
+	# Retrieve stats safely and cast to float
+	var slow_debuff: float = float(GameManager.stats.get("enemy_slow", 0.0))
+	var atk_debuff: float = float(GameManager.stats.get("enemy_atk_debuff", 0.0))
+	var def_debuff: float = float(GameManager.stats.get("enemy_def_debuff", 0.0))
 	
-	# 速度减益：通过 mini(0.8, x) 确保减速比例最高只到 80%
-	# 如果没有这个保护，当减速达到 100% 以上时，(1.0 - 1.1) 会变成负数，导致怪物倒着向后移动
-	current_speed = base_speed * (1.0 - mini(0.8, slow_debuff / 100.0))
+	# 速度减益：通过 minf(0.8, x) 确保减速比例最高只到 80%
+	current_speed = base_speed * (1.0 - minf(0.8, slow_debuff / 100.0))
 	
 	# 攻击力减益：同样限制最高削减 80% 的攻击力
-	# 防止攻击力变为负数，导致怪物打到玩家时反而给玩家加血
-	current_atk = base_atk * (1.0 - mini(0.8, atk_debuff / 100.0))
+	current_atk = base_atk * (1.0 - minf(0.8, atk_debuff / 100.0))
 	
-	# 防御削减：通过 maxf(0.0, x) 确保护甲最低被扒光到 0 点
-	# 如果护甲掉到负数（如 -10），在后续的护甲公式中 100 / (100 - 10) 会导致受击倍率异常变大甚至溢出
+	# 防御削减：确保护甲最低被扒光到 0 点
 	effective_def = maxf(0.0, base_def - (def_debuff * 2.0))
 
 func _physics_process(_delta: float) -> void:

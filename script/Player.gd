@@ -50,7 +50,7 @@ var current_atk: float = 10.0
 var current_projectile_count: int = 1
 
 # 移动配置
-const BASE_SPEED: float = 500.0
+const BASE_SPEED: float = 600.0
 const DASH_MULTIPLIER: float = 2.5
 const DASH_DURATION: float = 0.15
 const DASH_COST: int = 1
@@ -110,9 +110,9 @@ func _sync_stats() -> void:
 		health_bar.max_value = max_hp
 		health_bar.value = current_hp
 	
-	# 同步最大耐力：基础 2 + 每 5 点 stamina 提供 1
+	# 同步最大耐力：基础 2 + 每 20 点 stamina 提供 1
 	var stamina_points: float = GameManager.stats.get("stamina", 0.0) as float
-	max_stamina = 2 + floori(stamina_points / 5.0)
+	max_stamina = 2 + floori(stamina_points / 20.0)
 	current_stamina = mini(current_stamina, max_stamina)
 	
 	# 同步 UI
@@ -126,7 +126,7 @@ func _sync_stats() -> void:
 	
 	# 同步多重投射物
 	var proj_points: float = GameManager.stats.get("projectiles", 0.0) as float
-	current_projectile_count = 1 + floori(proj_points / 5.0)
+	current_projectile_count = 1 + floori(proj_points / 20.0)
 
 # =========================================================
 # 耐力与冲刺逻辑

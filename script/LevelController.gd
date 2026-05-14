@@ -77,12 +77,18 @@ func _on_spawn_timer_timeout() -> void:
 		else:
 			get_tree().root.add_child(enemy)
 
+var _is_cleared: bool = false
+
 func _on_enemy_died() -> void:
+	if _is_cleared:
+		return
+		
 	# 每次有敌人发出 died 信号，击杀数 + 1
 	current_kills += 1
 	
 	# 检查通关条件
 	if current_kills >= total_enemies_to_kill:
+		_is_cleared = true
 		# 通关条件达成，停止刷怪
 		if spawn_timer:
 			spawn_timer.stop()

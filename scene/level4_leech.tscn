@@ -19,6 +19,6 @@ position = Vector2(591.00024, 595)
 
 [node name="LevelController" parent="." index="5" unique_id=1188690888]
 enemy_scene = ExtResource("2_f0vqu")
-total_enemies_to_kill = 40
-spawn_interval = 0.5
+total_enemies_to_kill = 50
+spawn_interval = 0.3
 max_enemies_on_screen = 20

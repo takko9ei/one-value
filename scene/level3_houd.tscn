@@ -7,5 +7,5 @@
 
 [node name="LevelController" parent="." index="5" unique_id=1188690888]
 enemy_scene = ExtResource("2_hdtmx")
-total_enemies_to_kill = 10
+total_enemies_to_kill = 1
 max_enemies_on_screen = 5

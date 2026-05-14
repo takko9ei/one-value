@@ -27,6 +27,6 @@ scale = Vector2(0.19222035, 0.25573882)
 
 [node name="LevelController" parent="." index="5" unique_id=1188690888]
 enemy_scene = ExtResource("2_61by4")
-total_enemies_to_kill = 5
-spawn_interval = 5.0
-max_enemies_on_screen = 2
+total_enemies_to_kill = 1
+spawn_interval = 4.0
+max_enemies_on_screen = 3

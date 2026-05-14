@@ -4,7 +4,7 @@
 
 [node name="EnemyBase" unique_id=354812716 instance=ExtResource("1_uiiw5")]
 scale = Vector2(0.4390934, 0.386904)
-base_hp = 500.0
+base_hp = 600.0
 base_def = 80.0
 base_atk = 40.0
-base_speed = 320.0
+base_speed = 600.0

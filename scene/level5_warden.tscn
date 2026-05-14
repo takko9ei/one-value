@@ -7,6 +7,6 @@
 
 [node name="LevelController" parent="." index="5" unique_id=1188690888]
 enemy_scene = ExtResource("2_6yaot")
-total_enemies_to_kill = 7
-spawn_interval = 5.0
+total_enemies_to_kill = 6
+spawn_interval = 3.0
 max_enemies_on_screen = 3

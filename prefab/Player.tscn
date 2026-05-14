@@ -32,7 +32,7 @@ shape = SubResource("CircleShape2D_xhfnw")
 texture = ExtResource("1_xhfnw")
 
 [node name="ShootTimer" type="Timer" parent="." unique_id=1867605336]
-wait_time = 0.4
+wait_time = 0.5
 autostart = true
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1064576720]
