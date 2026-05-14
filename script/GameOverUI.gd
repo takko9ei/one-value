@@ -57,5 +57,7 @@ func _on_restart_button_pressed() -> void:
 		push_error("GameOverUI: GameManager 中未定义 retry_current_level() 方法！")
 
 func _on_back_button_pressed() -> void:
-	# 留空，作为后续返回标题使用
-	pass
+	# 解除暂停
+	get_tree().paused = false
+	# 返回标题菜单
+	get_tree().call_deferred("change_scene_to_file", "res://scene/MainMenu.tscn")

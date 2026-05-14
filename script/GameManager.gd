@@ -39,16 +39,16 @@ var stats: Dictionary = {
 func start_new_game() -> void:
 	current_level_index = 0
 	_reset_all_stats()
-	get_tree().change_scene_to_file("res://scene/AllocationUI.tscn")
+	get_tree().call_deferred("change_scene_to_file", "res://scene/AllocationUI.tscn")
 
 # 纯粹的 UI 跳转
 func go_to_allocation() -> void:
-	get_tree().change_scene_to_file("res://scene/AllocationUI.tscn")
+	get_tree().call_deferred("change_scene_to_file", "res://scene/AllocationUI.tscn")
 
 # 加载真正的战斗场景
 func load_current_level() -> void:
 	if current_level_index < level_scenes.size():
-		get_tree().change_scene_to_file(level_scenes[current_level_index])
+		get_tree().call_deferred("change_scene_to_file", level_scenes[current_level_index])
 	else:
 		# 暂不处理通关 UI，直接在后台打印提示
 		print("Game Beaten!")

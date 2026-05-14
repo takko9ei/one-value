@@ -13,9 +13,21 @@ extends Control
 func _ready() -> void:
 	# 1. 设置关卡显示文本
 	# 安全获取 current_level_index，如果 GameManager 中还没加这个变量，默认按第 0 关算
+	var stage_names: Array[String] = [
+		"Stage1: Swarm",
+		"Stage2: Golem",
+		"Stage3: Hount",
+		"Stage4: Leech",
+		"Stage5: Warden",
+		"Stage6: Comming Soon..."
+	]
+	
 	var current_level: int = GameManager.get("current_level_index") if "current_level_index" in GameManager else 0
 	if level_name_label:
-		level_name_label.text = "Stage " + str(current_level + 1)
+		if current_level >= 0 and current_level < stage_names.size():
+			level_name_label.text = stage_names[current_level]
+		else:
+			level_name_label.text = "Stage " + str(current_level + 1)
 	
 	# 2. 监听点数更新信号
 	if GameManager.has_signal("stats_updated"):
