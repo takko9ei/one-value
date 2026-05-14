@@ -93,3 +93,39 @@
    - 内部子节点：必须在文件顶部定义 `@onready var child: Node = $Child` 并附带完整的 `【Agent Context】` 注释。
    - 全局跨节点交互：优先通过 Group 获取对象引用，或通过全局信号（Signal Bus / GameManager）进行跨系统交互。
 4. **防御性编程**：在访问数组元素（如获取第一个玩家）前，必须验证数组是否为空（`is_empty()` 或 `size() > 0`）。
+
+## 七、 关卡流转与数值设计企图 (Level Flow & Design Intent)
+
+### 1. 典型流程
+- **流程流转**：开始 -> 分配第一关资源 -> 第一关战斗 -> 分配第二关资源 -> 第二关战斗 ...以此类推。
+- **胜负判定**：
+  - **通关**：每一关在击杀设定的敌人数量后（由 `LevelController` 的 `total_enemies_to_kill` 判定），会自动调用 `GameManager.next_level()` 进入下一关（中途会先跳转至 AllocationUI 进行再分配）。
+  - **失败重开**：失败后可直接按 Retry 按钮或物理快捷键 `R`。游戏会调用 `GameManager.retry_current_level()` 重置当前加点，从当前关卡的资源分配起重开。
+- **关卡总数**：当前项目预设 6 关。
+
+### 2. 数值设计的企图
+整体游戏难度偏高，但所有关卡均经过测试验证可通关。核心玩法要求玩家针对敌人特性进行“极限加点”：
+- **第一关 (Swarm / 虫群)**：数量大、速度快、伤害不低。要求玩家点**弹丸数量**（增加每次射出的子弹数）进行群攻。
+- **第二关 (Golem / 巨像)**：血厚防御高、移动速度慢。要求玩家点**极高的攻击力**来破防。
+- **第三关 (Hound / 猎犬)**：移动速度极快、攻击高。要求玩家点**怪物速度 Debuff** 降低其速度，并适当增加攻击与玩家的**冲刺次数 (Stamina)**。
+- **第四关 (Leech / 水蛭)**：低攻击、数量极其庞大、速度极快。要求玩家点**高血量**及适当增加弹丸数量，在怪堆里面抗伤至结束。
+- **第五关 (Warden / 典狱长)**：怪物属性比较均衡。要求适当降低敌人速度、加高攻击，并适当削弱敌人的防御。
+
+## 八、 扩展指南：如何添加新关卡与新敌人
+
+### 1. 添加新敌人
+- **继承基类**：新建场景并继承 `prefab/EnemyBase.tscn`（或对应的基础敌人场景）。
+- **配置属性**：在 Inspector 面板中，可以直接调整该子类敌人的初始数值（如基础血量、移速、攻击、防御等），并替换其美术素材。
+
+### 2. 添加新关卡与跳转逻辑
+- **继承基类**：新建场景并继承 `scene/LevelBase.tscn`。
+- **配置波次**：选中场景中的 `LevelController` 子节点，在 Inspector 中进行如下配置：
+  - 将刚才制作的新敌人场景拖入 `Enemy Scene` 属性中。
+  - 修改 `Total Enemies To Kill`（过关所需打败的敌人数量）。
+  - 修改 `Spawn Interval`（刷怪间隔）。
+  - 修改 `Max Enemies On Screen`（最大同屏数量）。
+- **注册关卡跳转**：
+  - 打开 `script/GameManager.gd`。
+  - 找到 `@export var level_scenes: Array[String]` 数组。
+  - 将新关卡的场景路径（例如 `"res://scene/level6_final.tscn"`）追加至该数组的末尾。
+  - **底层原理**：`LevelController` 内部已封装好针对每个生成怪物 `died` 信号的监听逻辑。当总击杀数达标时，它会自动停止刷怪并调用 `GameManager.next_level()`。而 `GameManager` 会将自身的 `current_level_index` 自增，并根据 `level_scenes` 的内容自动加载下一关场景或过渡UI。无需手动去 `LevelController` 内部增添硬编码跳转代码。
