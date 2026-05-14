@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://cfscbnv8avv58"]
+
+[ext_resource type="PackedScene" uid="uid://detwna7w2k3wd" path="res://prefab/EnemyBase.tscn" id="1_vw4i4"]
+
+[node name="EnemyBase" unique_id=354812716 instance=ExtResource("1_vw4i4")]
+scale = Vector2(0.195, 0.195)
+base_hp = 20.0
+base_def = 10.0
+base_speed = 300.0

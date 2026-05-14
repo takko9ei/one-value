@@ -1,0 +1,88 @@
+[gd_scene format=3 uid="uid://6jg87j7gsbt1"]
+
+[ext_resource type="Texture2D" uid="uid://chsd15snc4gas" path="res://mat/background.png" id="1_aiwqg"]
+[ext_resource type="PackedScene" uid="uid://bctdd3u8oshfq" path="res://prefab/Obstacle.tscn" id="2_7vdoc"]
+[ext_resource type="PackedScene" uid="uid://dupmuukt1o8t8" path="res://prefab/Walls.tscn" id="3_cw6tb"]
+[ext_resource type="PackedScene" uid="uid://kbp05jvfucbl" path="res://prefab/GameOverUI.tscn" id="4_5exex"]
+[ext_resource type="PackedScene" uid="uid://bwmg6wo00x5gy" path="res://prefab/Player.tscn" id="5_2ga4g"]
+[ext_resource type="Script" uid="uid://b6rna4anmhjl3" path="res://script/LevelController.gd" id="6_ss3rl"]
+
+[node name="LevelBase2" type="Node2D" unique_id=903493907]
+
+[node name="Background" type="Sprite2D" parent="." unique_id=1905704466]
+position = Vector2(995, 585.5)
+scale = Vector2(1.0364584, 1.0842594)
+texture = ExtResource("1_aiwqg")
+
+[node name="Obstacles" type="Node2D" parent="." unique_id=1528090072]
+
+[node name="Obstacle" parent="Obstacles" unique_id=1741468574 instance=ExtResource("2_7vdoc")]
+position = Vector2(248.00002, 203)
+scale = Vector2(0.39565784, 0.27585867)
+
+[node name="Obstacle2" parent="Obstacles" unique_id=1480085789 instance=ExtResource("2_7vdoc")]
+position = Vector2(1516, 816)
+scale = Vector2(0.62852615, 0.5092218)
+
+[node name="Obstacle3" parent="Obstacles" unique_id=81715292 instance=ExtResource("2_7vdoc")]
+position = Vector2(1237, 257)
+scale = Vector2(0.3293664, 0.18156895)
+
+[node name="Obstacle4" parent="Obstacles" unique_id=1778859401 instance=ExtResource("2_7vdoc")]
+position = Vector2(625, 901)
+scale = Vector2(0.36321568, 0.21177131)
+
+[node name="Obstacle5" parent="Obstacles" unique_id=1576723658 instance=ExtResource("2_7vdoc")]
+position = Vector2(275, 583)
+scale = Vector2(0.28969467, 0.19603679)
+
+[node name="Obstacle6" parent="Obstacles" unique_id=917031406 instance=ExtResource("2_7vdoc")]
+position = Vector2(1042, 583)
+scale = Vector2(0.5963069, 0.4575394)
+
+[node name="Obstacle7" parent="Obstacles" unique_id=1962116449 instance=ExtResource("2_7vdoc")]
+position = Vector2(1708, 193)
+scale = Vector2(0.4317742, 0.40678725)
+
+[node name="Walls" parent="." unique_id=1638335007 instance=ExtResource("3_cw6tb")]
+collision_layer = 4
+collision_mask = 0
+
+[node name="GameOverUi" parent="." unique_id=17944455 instance=ExtResource("4_5exex")]
+visible = false
+
+[node name="Player" parent="." unique_id=1386097706 node_paths=PackedStringArray("game_over_ui") instance=ExtResource("5_2ga4g")]
+position = Vector2(977, 381)
+game_over_ui = NodePath("../GameOverUi")
+
+[node name="LevelController" type="Node2D" parent="." unique_id=1188690888]
+script = ExtResource("6_ss3rl")
+
+[node name="SpawnTimer" type="Timer" parent="LevelController" unique_id=1622400632]
+autostart = true
+
+[node name="SpawnPoints" type="Node2D" parent="LevelController" unique_id=220473392]
+
+[node name="SpawnPoints#Marker2D" type="Marker2D" parent="LevelController/SpawnPoints" unique_id=330577456]
+position = Vector2(73, 62)
+
+[node name="SpawnPoints#Marker2D2" type="Marker2D" parent="LevelController/SpawnPoints" unique_id=1613269125]
+position = Vector2(1003, 52)
+
+[node name="SpawnPoints#Marker2D3" type="Marker2D" parent="LevelController/SpawnPoints" unique_id=793360530]
+position = Vector2(1933, 30)
+
+[node name="SpawnPoints#Marker2D4" type="Marker2D" parent="LevelController/SpawnPoints" unique_id=294041463]
+position = Vector2(72, 1113)
+
+[node name="SpawnPoints#Marker2D5" type="Marker2D" parent="LevelController/SpawnPoints" unique_id=627587137]
+position = Vector2(991, 1120)
+
+[node name="SpawnPoints#Marker2D6" type="Marker2D" parent="LevelController/SpawnPoints" unique_id=328181675]
+position = Vector2(1922, 1105)
+
+[node name="SpawnPoints#Marker2D7" type="Marker2D" parent="LevelController/SpawnPoints" unique_id=309583646]
+position = Vector2(53, 577)
+
+[node name="SpawnPoints#Marker2D8" type="Marker2D" parent="LevelController/SpawnPoints" unique_id=483541055]
+position = Vector2(1933, 604)

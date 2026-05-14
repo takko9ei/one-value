@@ -17,12 +17,12 @@
   - 职责: 存储全局状态（源力点分配字典 `stats`），处理分配逻辑，广播状态变更信号。
 - **Player (CharacterBody2D)**
   - 场景: `prefab/Player.tscn` | 脚本: `script/Player.gd`
-  - 包含: `CollisionShape2D`, `Sprite2D`, `ShootTimer`, `Camera2D`, `Muzzle(Marker2D)`
-  - 职责: 监听单例更新自身属性，处理输入移动、冲刺。包含精准的自动索敌逻辑（计算从 `Muzzle` 到活着的敌人的方向），并实现多发子弹的扇形发射算法。
+  - 包含: `CollisionShape2D`, `Sprite2D`, `ShootTimer`, `Camera2D`, `Muzzle(Marker2D)`, `HealthBar(ProgressBar)`, `StaminaBar(ProgressBar)`
+  - 职责: 监听单例更新自身属性，动态同步悬浮生命值与耐力值进度条。处理输入移动、冲刺。包含精准的自动索敌逻辑（计算从 `Muzzle` 到活着的敌人的方向），并实现多发子弹的扇形发射算法。
 - **EnemyBase (CharacterBody2D)**
   - 场景: `prefab/EnemyBase.tscn` | 脚本: `script/EnemyBase.gd`
-  - 包含: `CollisionPolygon2D`, `Sprite2D`, `Hitbox(Area2D)`
-  - 职责: 计算被削减后的运行时属性，追踪玩家，并在碰撞时造成伤害。
+  - 包含: `CollisionPolygon2D`, `Sprite2D`, `Hitbox(Area2D)`, `ProgressBar(ProgressBar)`
+  - 职责: 计算被削减后的运行时属性，追踪玩家，在碰撞时造成伤害，并实时将扣血反馈至头顶悬浮血条。
 - **PlayerProjectile (Area2D)**
   - 场景: `prefab/PlayerProjectile.tscn` | 脚本: `script/PlayerProjectile.gd`
   - 包含: `Sprite2D`, `CollisionShape2D` (内部动态生成生命周期 `Timer`)
@@ -31,6 +31,14 @@
   - 场景: `prefab/GameOverUI.tscn` | 脚本: `script/GameOverUI.gd`
   - 包含: `RestartButton (Button)`, `BackButton (Button)`
   - 职责: 监听玩家死亡，控制全局时停 (`get_tree().paused = true`) 并显示交互菜单。节点模式必须设为 `PROCESS_MODE_ALWAYS` 以豁免时停。包含基于 `KEY_R` 的物理快捷键光速重开逻辑。
+- **MainMenu (Control)**
+  - 场景: `prefab/MainMenu.tscn` | 脚本: `script/MainMenu.gd`
+  - 包含: `StartButton`, `QuitButton`
+  - 职责: 游戏标题画面，处理基础流程控制，负责调用 `GameManager.start_new_game()` 进入游戏。
+- **AllocationUI (Control)**
+  - 场景: `prefab/AllocationUI.tscn` | 脚本: `script/AllocationUI.gd`
+  - 包含: `LevelNameLabel`, `PointsLabel`, `SliderContainer (内含 7 个与 stats 字典同名的 HSlider)`
+  - 职责: 游戏内的零和资源分配终端。利用 `slider.name` 动态遍历并一键绑定信号。内置 **UI 橡皮筋拉回机制**：当加点受限于 `total_pool` 导致底层拒绝累加时，强制调用 `set_value_no_signal` 覆写游标，消除数据与视觉的脱节现象。
 
 ## 三、 数据流向与零和分配字典 (Data Flow & Stats Dictionary)
 **GameManager 是唯一的真理来源 (Single Source of Truth)。**

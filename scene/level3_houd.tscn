@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://gh3m2ap1hbr"]
+
+[ext_resource type="PackedScene" uid="uid://6jg87j7gsbt1" path="res://scene/LevelBase.tscn" id="1_tsqnm"]
+[ext_resource type="PackedScene" uid="uid://c34grh1atn22f" path="res://prefab/enemy_hounds.tscn" id="2_hdtmx"]
+
+[node name="LevelBase" unique_id=903493907 instance=ExtResource("1_tsqnm")]
+
+[node name="LevelController" parent="." index="5" unique_id=1188690888]
+enemy_scene = ExtResource("2_hdtmx")
+total_enemies_to_kill = 10
+max_enemies_on_screen = 5

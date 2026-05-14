@@ -50,10 +50,11 @@ func _on_restart_button_pressed() -> void:
 	# 解除暂停。重开前必须恢复时间流动，否则新实例化的场景将一出生就在暂停状态
 	get_tree().paused = false
 	
-	# 重载当前场景（未来这里会改为跳回全局分配菜单）
-	var err = get_tree().reload_current_scene()
-	if err != OK:
-		push_error("GameOverUI: 重载场景失败！错误码: ", err)
+	# 跳转回加点 UI 重新分配
+	if GameManager.has_method("retry_current_level"):
+		GameManager.retry_current_level()
+	else:
+		push_error("GameOverUI: GameManager 中未定义 retry_current_level() 方法！")
 
 func _on_back_button_pressed() -> void:
 	# 留空，作为后续返回标题使用

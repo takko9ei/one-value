@@ -4,11 +4,11 @@ extends Control
 # =========================================================
 # Node References
 # =========================================================
-@onready var start_button: Button = $ButtonContainer/StartButton
-@onready var quit_button: Button = $ButtonContainer/QuitButton
-@onready var level_name_label: Label = $LevelNameLabel
-@onready var points_label: Label = $PointsLabel
-@onready var slider_container: Control = $SliderContainer
+@onready var start_button: Button = $Panel/ButtonContainer/StartButton
+@onready var quit_button: Button = $Panel/ButtonContainer/QuitButton
+@onready var level_name_label: Label = $Panel/LevelNameLabel
+@onready var points_label: Label = $Panel/PointsLabel
+@onready var slider_container: Control = $Panel/SliderContainer
 
 func _ready() -> void:
 	# 1. 设置关卡显示文本
@@ -56,7 +56,7 @@ func _update_points_label() -> void:
 		current_total += GameManager.stats[key] as int
 	
 	# 计算剩余的可用点数
-	var remaining_points: int = GameManager.total_pool - current_total
+	var remaining_points: int = GameManager.MAX_TOTAL_POINTS - current_total
 	points_label.text = "SP: " + str(remaining_points)
 
 func _on_slider_value_changed(new_value: float, slider: HSlider) -> void:
@@ -81,4 +81,4 @@ func _on_start_button_pressed() -> void:
 
 func _on_quit_button_pressed() -> void:
 	# 切换回主菜单场景
-	get_tree().change_scene_to_file("res://MainMenu.tscn")
+	get_tree().change_scene_to_file("res://scene/MainMenu.tscn")

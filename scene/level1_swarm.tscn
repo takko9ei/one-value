@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://s8f5eghgavyb"]
+
+[ext_resource type="PackedScene" uid="uid://6jg87j7gsbt1" path="res://scene/LevelBase.tscn" id="1_fn715"]
+[ext_resource type="PackedScene" uid="uid://cfscbnv8avv58" path="res://prefab/enemy_swarm.tscn" id="2_x8ovl"]
+
+[node name="LevelBase" unique_id=903493907 instance=ExtResource("1_fn715")]
+
+[node name="Obstacle" parent="Obstacles" parent_id_path=PackedInt32Array(1528090072) index="0" unique_id=1741468574]
+position = Vector2(344, 353)
+
+[node name="Obstacle2" parent="Obstacles" parent_id_path=PackedInt32Array(1528090072) index="1" unique_id=1480085789]
+position = Vector2(760, 1031)
+
+[node name="Obstacle4" parent="Obstacles" parent_id_path=PackedInt32Array(1528090072) index="3" unique_id=1778859401]
+position = Vector2(1698.9999, 582)
+scale = Vector2(0.7027485, 0.40851736)
+
+[node name="Obstacle6" parent="Obstacles" parent_id_path=PackedInt32Array(1528090072) index="5" unique_id=917031406]
+position = Vector2(658.00006, 178)
+scale = Vector2(0.8003626, 0.8245341)
+
+[node name="Obstacle7" parent="Obstacles" parent_id_path=PackedInt32Array(1528090072) index="6" unique_id=1962116449]
+position = Vector2(1500.0001, 844)
+
+[node name="LevelController" parent="." index="5" unique_id=1188690888]
+enemy_scene = ExtResource("2_x8ovl")

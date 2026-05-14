@@ -1,6 +1,9 @@
 class_name EnemyBase
 extends CharacterBody2D
 
+# 声明死亡信号，用于通知关卡控制器
+signal died
+
 # =========================================================
 # 【Agent Context】 节点结构说明
 # =========================================================
@@ -105,6 +108,7 @@ func take_damage(incoming_damage: float) -> void:
 	
 	# Destroy if HP drops to 0 or below
 	if current_hp <= 0:
+		died.emit()
 		queue_free()
 
 func _on_hitbox_body_entered(body: Node2D) -> void:
