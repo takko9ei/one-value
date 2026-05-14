@@ -36,6 +36,10 @@ The overall game difficulty might be slightly high, but all levels have been tes
 
 ### Developer Guide: How to Add New Levels and Enemies
 
+#### If using AI
+
+Let AI read ARCHITECTURE.md to understand the architecture, and then modify the code.
+
 #### How to Add New Enemies
 
 1. **Create New Enemy Scene**: Create a new scene inheriting from `prefab/EnemyBase.tscn` (or the base enemy prefab).
@@ -88,6 +92,10 @@ The overall game difficulty might be slightly high, but all levels have been tes
 - **第5ステージ (Warden)**：敵のステータスが比較的バランスが取れています。適度に**敵の速度を下げ**、適度に**攻撃力を上げ**、適度に**敵の防御力を下げる**必要があります。
 
 ### 開発者向けガイド：新しいステージと敵の追加方法
+
+#### AIを使う場合
+
+ARCHITECTURE.mdを読ませてから、ARCHITECTURE.mdを参考にしてコードを修正するように指示する。
 
 #### 新しい敵の追加方法
 
