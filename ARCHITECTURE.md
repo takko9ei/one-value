@@ -17,22 +17,39 @@
   - 职责: 存储全局状态（源力点分配字典 `stats`），处理分配逻辑，广播状态变更信号。
 - **Player (CharacterBody2D)**
   - 场景: `prefab/Player.tscn` | 脚本: `script/Player.gd`
-  - 包含: `CollisionShape2D`, `Sprite2D`, `ShootTimer`, `Camera2D`
-  - 职责: 监听单例更新自身属性，处理输入移动、冲刺。
+  - 包含: `CollisionShape2D`, `Sprite2D`, `ShootTimer`, `Camera2D`, `Muzzle(Marker2D)`
+  - 职责: 监听单例更新自身属性，处理输入移动、冲刺。包含精准的自动索敌逻辑（计算从 `Muzzle` 到活着的敌人的方向），并实现多发子弹的扇形发射算法。
 - **EnemyBase (CharacterBody2D)**
   - 场景: `prefab/EnemyBase.tscn` | 脚本: `script/EnemyBase.gd`
   - 包含: `CollisionPolygon2D`, `Sprite2D`, `Hitbox(Area2D)`
   - 职责: 计算被削减后的运行时属性，追踪玩家，并在碰撞时造成伤害。
 - **PlayerProjectile (Area2D)**
   - 场景: `prefab/PlayerProjectile.tscn` | 脚本: `script/PlayerProjectile.gd`
-  - 包含: `Sprite2D`, `CollisionShape2D` (内部动态生成 `Timer` 和 `VisibleOnScreenNotifier2D`)
-  - 职责: 沿给定方向直线运动，检测碰撞并触发伤害或销毁。
+  - 包含: `Sprite2D`, `CollisionShape2D` (内部动态生成生命周期 `Timer`)
+  - 职责: 沿给定方向直线运动，碰到敌人造成伤害，撞到敌人或环境墙壁后自我销毁；3 秒生存期结束后自动销毁防止内存泄漏。
+- **GameOverUI (CanvasLayer)**
+  - 场景: `prefab/GameOverUI.tscn` | 脚本: `script/GameOverUI.gd`
+  - 包含: `RestartButton (Button)`, `BackButton (Button)`
+  - 职责: 监听玩家死亡，控制全局时停 (`get_tree().paused = true`) 并显示交互菜单。节点模式必须设为 `PROCESS_MODE_ALWAYS` 以豁免时停。包含基于 `KEY_R` 的物理快捷键光速重开逻辑。
 
-## 三、 数据流向 (Data Flow)
+## 三、 数据流向与零和分配字典 (Data Flow & Stats Dictionary)
 **GameManager 是唯一的真理来源 (Single Source of Truth)。**
 1. **状态更新**：任何对数值的修改（加点、减点、Debuff）必须直接调用 `GameManager` 提供的方法。
 2. **状态读取**：其他所有实体节点（Player, Enemy, Projectile）只能通过读取 `GameManager.stats` 字典来初始化属性。
 3. **响应式更新**：实体必须连接 `GameManager.stats_updated` 信号。当玩家在 UI 中调整分配点数时，场上存在的实体应自动重新计算运行时属性。
+
+**当前 `stats` 字典的规范映射及其影响**：
+- `hp`: 提升玩家最大血量（计算公式：`100.0 + hp * 20.0`）。`Player` 初始化时满血，受击调用 `take_damage` 扣减。
+- `atk`: 提升玩家基础攻击力（计算公式：`10.0 + atk * 2.0`）。此数值会动态赋予发射出的 `PlayerProjectile`。
+- `stamina`: 提升玩家最大耐力（计算公式：`2 + floori(stamina / 5.0)`）。
+  - **冲刺机制 (Dash)**：按下 `dash` 键消耗 1 点耐力，获得 `2.5` 倍移速持续 `0.15` 秒。
+  - **耐力恢复**：每 `1.5` 秒自动恢复 `1` 点耐力直至上限。
+- `projectiles`: 提升多重投射物数量。**每 5 点增加 1 发额外子弹**。`Player.gd` 会自动启用**扇形散布算法**，均匀发射多发子弹。
+- `enemy_slow`: 敌人减速 Debuff。乘区公式 `1.0 - mini(0.8, slow / 100.0)`，**硬上限 80%** 防止怪物倒退。
+- `enemy_atk_debuff`: 敌人攻击力削弱 Debuff。乘区公式 `1.0 - mini(0.8, atk_debuff / 100.0)`，**硬上限 80%** 防止攻击力变负数反向治疗玩家。
+- `enemy_def_debuff`: 敌人防御力削减（破甲）。
+  - **有效护甲计算**：`effective_def = maxf(0.0, base_def - def_debuff * 2.0)`，**硬下限 0** 防止负护甲导致分母崩溃或伤害倍增。
+  - **承伤模型**：采用经典的有效生命值公式 `100.0 / (100.0 + effective_def)`。防御力越高，额外减伤收益递减，但有效血量呈线性增长。
 
 ## 四、 物理与碰撞矩阵 (Physics & Collision Matrix)
 

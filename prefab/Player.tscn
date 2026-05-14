@@ -2,15 +2,28 @@
 
 [ext_resource type="Script" uid="uid://b27asrxooi7ps" path="res://script/Player.gd" id="1_kpjcp"]
 [ext_resource type="Texture2D" uid="uid://b64br085ib73r" path="res://mat/round.png" id="1_xhfnw"]
+[ext_resource type="PackedScene" uid="uid://4w4ra5m4u7kt" path="res://prefab/PlayerProjectile.tscn" id="2_poo86"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xhfnw"]
 radius = 128.0039
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_poo86"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fetod"]
+bg_color = Color(1, 1, 1, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qv7ja"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vga1c"]
+bg_color = Color(1, 1, 1, 1)
+
 [node name="Player" type="CharacterBody2D" unique_id=1386097706 groups=["player"]]
-position = Vector2(-1.9999998, 0.99999994)
 scale = Vector2(0.2, 0.2)
 collision_mask = 4
 script = ExtResource("1_kpjcp")
+projectile_scene = ExtResource("2_poo86")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1758082994]
 shape = SubResource("CircleShape2D_xhfnw")
@@ -25,3 +38,23 @@ autostart = true
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1064576720]
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
+
+[node name="Muzzle" type="Marker2D" parent="." unique_id=1162418246]
+
+[node name="StaminaBar" type="ProgressBar" parent="." unique_id=222605602]
+offset_left = -75.0
+offset_top = -175.0
+offset_right = 75.0
+offset_bottom = -167.0
+theme_override_styles/background = SubResource("StyleBoxFlat_poo86")
+theme_override_styles/fill = SubResource("StyleBoxFlat_fetod")
+show_percentage = false
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1520098156]
+offset_left = -75.0
+offset_top = -195.0
+offset_right = 75.0
+offset_bottom = -180.0
+theme_override_styles/background = SubResource("StyleBoxFlat_qv7ja")
+theme_override_styles/fill = SubResource("StyleBoxFlat_vga1c")
+show_percentage = false

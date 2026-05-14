@@ -2,9 +2,10 @@
 
 [ext_resource type="Texture2D" uid="uid://chsd15snc4gas" path="res://mat/background.png" id="1_x4av3"]
 [ext_resource type="PackedScene" uid="uid://bctdd3u8oshfq" path="res://prefab/Obstacle.tscn" id="2_x4av3"]
-[ext_resource type="PackedScene" uid="uid://dupmuukt1o8t8" path="res://prefab/walls.tscn" id="3_rf2cd"]
+[ext_resource type="PackedScene" uid="uid://dupmuukt1o8t8" path="res://prefab/Walls.tscn" id="3_rf2cd"]
 [ext_resource type="PackedScene" uid="uid://bwmg6wo00x5gy" path="res://prefab/Player.tscn" id="3_rpqi1"]
 [ext_resource type="PackedScene" uid="uid://detwna7w2k3wd" path="res://prefab/EnemyBase.tscn" id="4_uxrcv"]
+[ext_resource type="PackedScene" uid="uid://kbp05jvfucbl" path="res://prefab/GameOverUI.tscn" id="6_a814b"]
 
 [node name="Main" type="Node2D" unique_id=392495462]
 
@@ -47,11 +48,17 @@ scale = Vector2(0.4317742, 0.40678725)
 collision_layer = 4
 collision_mask = 0
 
-[node name="Player" parent="." unique_id=1386097706 groups=["player"] instance=ExtResource("3_rpqi1")]
+[node name="Player" parent="." unique_id=1386097706 node_paths=PackedStringArray("game_over_ui") instance=ExtResource("3_rpqi1")]
 position = Vector2(977, 381)
+game_over_ui = NodePath("../GameOverUi")
 
 [node name="EnemyBase" parent="." unique_id=354812716 instance=ExtResource("4_uxrcv")]
 position = Vector2(852, 977)
+base_hp = 999.0
+base_atk = 100.0
 
 [node name="EnemyBase2" parent="." unique_id=889284932 instance=ExtResource("4_uxrcv")]
 position = Vector2(1375, 744)
+
+[node name="GameOverUi" parent="." unique_id=17944455 instance=ExtResource("6_a814b")]
+visible = false

@@ -3,7 +3,13 @@
 [ext_resource type="Texture2D" uid="uid://c8suvcnje2xlb" path="res://mat/triangle.png" id="1_gjhpl"]
 [ext_resource type="Script" uid="uid://dr6ru4wetaygl" path="res://script/EnemyBase.gd" id="1_u4ydw"]
 
-[node name="EnemyBase" type="CharacterBody2D" unique_id=354812716]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0nj3s"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ol8em"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="EnemyBase" type="CharacterBody2D" unique_id=354812716 groups=["enemy"]]
 scale = Vector2(0.295, 0.295)
 collision_layer = 2
 collision_mask = 6
@@ -21,3 +27,13 @@ collision_layer = 0
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Hitbox" unique_id=1255431287]
 polygon = PackedVector2Array(-1, -178, -138, 92, 138, 92)
+
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=699790268]
+offset_left = -75.0
+offset_top = -220.0
+offset_right = 75.0
+offset_bottom = -200.0
+theme_override_styles/background = SubResource("StyleBoxFlat_0nj3s")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ol8em")
+step = 0.1
+show_percentage = false
