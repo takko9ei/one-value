@@ -1,4 +1,4 @@
-# Zero-Sum Allocation Shooter (零和分配射击游戏 / ゼロ和分配シューティング)
+# ONE-VALUE
 
 [English](#english) | [日本語](#日本語) | [中文](#中文)
 
