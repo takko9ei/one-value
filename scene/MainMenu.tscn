@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://dvobag35ox18n"]
+
+[ext_resource type="Script" uid="uid://ck7t2vrl6omig" path="res://script/MainMenu.gd" id="1_lnxie"]
+[ext_resource type="Texture2D" uid="uid://chsd15snc4gas" path="res://mat/background.png" id="1_nn17b"]
+
+[node name="MainMenu" type="Control" unique_id=801407534]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lnxie")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1419274019]
+position = Vector2(667, 374)
+texture = ExtResource("1_nn17b")
+
+[node name="Panel" type="Panel" parent="." unique_id=2030747512]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="Label" type="Label" parent="Panel" unique_id=1142051037]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -187.0
+offset_right = 300.0
+offset_bottom = -27.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_font_sizes/font_size = 100
+text = "One Value"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="HBoxContainer" parent="Panel" unique_id=587547686]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -345.75
+offset_top = 105.0
+offset_right = 345.75
+offset_bottom = 204.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 145
+alignment = 1
+
+[node name="QuitButton" type="Button" parent="Panel/VBoxContainer" unique_id=860368433]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 44
+text = "Quit"
+
+[node name="StartButton" type="Button" parent="Panel/VBoxContainer" unique_id=1340998216]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 44
+text = "Start
+"

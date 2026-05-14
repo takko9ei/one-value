@@ -1,0 +1,170 @@
+[gd_scene format=3 uid="uid://xpoaipuguxnf"]
+
+[ext_resource type="Texture2D" uid="uid://chsd15snc4gas" path="res://mat/background.png" id="1_cdu1c"]
+[ext_resource type="Script" uid="uid://bqn8734q8b42v" path="res://script/AllocationUI.gd" id="1_l32ab"]
+
+[node name="AllocationUI" type="Control" unique_id=801407534]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_l32ab")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1419274019]
+position = Vector2(667, 374)
+texture = ExtResource("1_cdu1c")
+
+[node name="Panel" type="Panel" parent="." unique_id=2030747512]
+layout_mode = 0
+offset_right = 1280.0
+offset_bottom = 720.0
+
+[node name="LevelNameLabel" type="Label" parent="Panel" unique_id=1142051037]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -300.0
+offset_top = -358.0
+offset_right = 300.0
+offset_bottom = -198.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset_ratio = Vector2(0.5, 0.5)
+theme_override_font_sizes/font_size = 100
+text = "One Value"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PointsLabel" type="Label" parent="Panel" unique_id=897314321]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -100.0
+offset_top = -201.0
+offset_right = 100.0
+offset_bottom = -101.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 63
+text = "100"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ButtonContainer" type="HBoxContainer" parent="Panel" unique_id=587547686]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -345.75
+offset_top = 240.0
+offset_right = 345.75
+offset_bottom = 339.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 145
+alignment = 1
+
+[node name="QuitButton" type="Button" parent="Panel/ButtonContainer" unique_id=860368433]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 44
+text = "Quit"
+
+[node name="StartButton" type="Button" parent="Panel/ButtonContainer" unique_id=1340998216]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 44
+text = "Start
+"
+
+[node name="SliderContainer" type="VBoxContainer" parent="Panel" unique_id=1600876461]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -211.0
+offset_top = -81.0
+offset_right = 589.0
+offset_bottom = 219.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 27
+alignment = 1
+
+[node name="hp" type="HSlider" parent="Panel/SliderContainer" unique_id=1371461555]
+layout_mode = 2
+
+[node name="atk" type="HSlider" parent="Panel/SliderContainer" unique_id=1173409283]
+layout_mode = 2
+
+[node name="stamina" type="HSlider" parent="Panel/SliderContainer" unique_id=1296683844]
+layout_mode = 2
+step = 5.0
+
+[node name="projectiles" type="HSlider" parent="Panel/SliderContainer" unique_id=1632186415]
+layout_mode = 2
+step = 5.0
+
+[node name="enemy_slow" type="HSlider" parent="Panel/SliderContainer" unique_id=906533294]
+layout_mode = 2
+
+[node name="enemy_atk_debuff" type="HSlider" parent="Panel/SliderContainer" unique_id=1678902898]
+layout_mode = 2
+
+[node name="enemy_def_debuff" type="HSlider" parent="Panel/SliderContainer" unique_id=525648881]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel" unique_id=516309890]
+layout_mode = 0
+offset_left = 98.0
+offset_top = 287.0
+offset_right = 411.0
+offset_bottom = 587.0
+theme_override_constants/separation = 20
+
+[node name="Label" type="Label" parent="Panel/VBoxContainer" unique_id=1504066667]
+layout_mode = 2
+text = "HP(1Point + 20HP)"
+horizontal_alignment = 2
+
+[node name="Label2" type="Label" parent="Panel/VBoxContainer" unique_id=875705593]
+layout_mode = 2
+text = "ATTACK(1Point + 2ATK)"
+horizontal_alignment = 2
+
+[node name="Label3" type="Label" parent="Panel/VBoxContainer" unique_id=976800219]
+layout_mode = 2
+text = "STAMINA(5Point + 1DASH)"
+horizontal_alignment = 2
+
+[node name="Label4" type="Label" parent="Panel/VBoxContainer" unique_id=938184709]
+layout_mode = 2
+text = "ADD PROJECTILE(5Point + 1PROJECTILE)"
+horizontal_alignment = 2
+
+[node name="Label5" type="Label" parent="Panel/VBoxContainer" unique_id=1102367420]
+layout_mode = 2
+text = "ENEMY SLOW(1Point = 1%Slower)"
+horizontal_alignment = 2
+
+[node name="Label6" type="Label" parent="Panel/VBoxContainer" unique_id=1415014754]
+layout_mode = 2
+text = "ENEMY ATK DEBUFF(1Point = 1%Weaker)"
+horizontal_alignment = 2
+
+[node name="Label7" type="Label" parent="Panel/VBoxContainer" unique_id=443911979]
+layout_mode = 2
+text = "ENEMY DEF DEBUFF(1Point = 1%Weaker)"
+horizontal_alignment = 2
