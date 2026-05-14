@@ -2,13 +2,13 @@ class_name PlayerProjectile
 extends Area2D
 
 # =========================================================
-# 【Agent Context】 节点结构说明
+# [Agent Context] Node Structure Explanation
 # =========================================================
-# 本脚本挂载于 PlayerProjectile (Area2D) 根节点上。
-# 场景包含以下静态配置的子节点，便于后续迭代获取上下文：
+# This script is attached to the PlayerProjectile (Area2D) root node.
+# The scene contains the following statically configured child nodes for context:
 # - PlayerProjectile (Area2D) [Root]
-#   ├── Sprite2D (Sprite2D)                 : 子弹贴图
-#   └── CollisionShape2D (CollisionShape2D) : 碰撞检测形状
+#   ├── Sprite2D (Sprite2D)                 : Projectile texture
+#   └── CollisionShape2D (CollisionShape2D) : Collision detection shape
 # =========================================================
 
 @onready var sprite: Sprite2D = $Sprite2D
@@ -19,7 +19,7 @@ var direction: Vector2 = Vector2.ZERO
 var damage: float = 10.0
 
 func _ready() -> void:
-	# 创建一个计时器，生存 3 秒后调用 queue_free() 自动销毁，防止内存泄漏
+	# Create a timer, call queue_free() automatically after surviving for 3 seconds to prevent memory leaks
 	var timer := Timer.new()
 	timer.wait_time = 3.0
 	timer.one_shot = true
@@ -27,19 +27,19 @@ func _ready() -> void:
 	timer.timeout.connect(queue_free)
 	add_child(timer)
 	
-	# 连接碰撞信号
+	# Connect collision signals
 	body_entered.connect(_on_body_entered)
 
 func _physics_process(delta: float) -> void:
-	# 通过全局坐标直线移动
+	# Move in a straight line through global coordinates
 	global_position += direction * speed * delta
-	# 让子弹贴图朝向运动方向（可选）
+	# Rotate the projectile texture to face the movement direction (optional)
 	rotation = direction.angle()
 
 func _on_body_entered(body: Node2D) -> void:
-	# 如果碰到的 body 在 "enemy" 组，且拥有 take_damage 方法
+	# If the body touched is in the "enemy" group and has the take_damage method
 	if body.is_in_group("enemy") and body.has_method("take_damage"):
 		body.take_damage(damage)
 		
-	# 无论碰到的是敌人还是墙壁（Layer 3），只要发生碰撞，立刻销毁自身
+	# Regardless of hitting an enemy or a wall (Layer 3), destroy itself immediately upon any collision
 	queue_free()

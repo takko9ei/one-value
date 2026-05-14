@@ -1,19 +1,19 @@
 class_name EnemyBase
 extends CharacterBody2D
 
-# 声明死亡信号，用于通知关卡控制器
+# Declare death signal, used to notify the level controller
 signal died
 
 # =========================================================
-# 【Agent Context】 节点结构说明
+# [Agent Context] Node Structure Explanation
 # =========================================================
-# 本脚本挂载于 EnemyBase (CharacterBody2D) 根节点上。
-# 场景包含以下子节点，便于后续迭代获取上下文：
+# This script is attached to the EnemyBase (CharacterBody2D) root node.
+# The scene contains the following child nodes for context:
 # - EnemyBase (CharacterBody2D) [Root]
-#   ├── CollisionPolygon2D (CollisionPolygon2D) : 碰撞体，用于碰撞检测，敌人互挤，环境碰撞
-#   ├── Sprite2D (Sprite2D)                     : 敌人贴图/动画
-#   └── Hitbox (Area2D)                         : 用于碰撞玩家扣玩家血
-#       └── CollisionPolygon2D (CollisionPolygon2D) : 用于上述hit的碰撞体
+#   ├── CollisionPolygon2D (CollisionPolygon2D) : Collider for physics detection, enemy pushing, environment collision
+#   ├── Sprite2D (Sprite2D)                     : Enemy texture/animation
+#   └── Hitbox (Area2D)                         : Used to detect collision with player to deal damage
+#       └── CollisionPolygon2D (CollisionPolygon2D) : Collider for the hitbox
 # =========================================================
 
 # =========================================================
@@ -66,13 +66,13 @@ func _sync_stats() -> void:
 	var atk_debuff: float = float(GameManager.stats.get("enemy_atk_debuff", 0.0))
 	var def_debuff: float = float(GameManager.stats.get("enemy_def_debuff", 0.0))
 	
-	# 速度减益：通过 minf(0.8, x) 确保减速比例最高只到 80%
+	# Speed debuff: cap the reduction ratio at 80% using minf(0.8, x)
 	current_speed = base_speed * (1.0 - minf(0.8, slow_debuff / 100.0))
 	
-	# 攻击力减益：同样限制最高削减 80% 的攻击力
+	# Attack debuff: similarly restrict maximum reduction to 80%
 	current_atk = base_atk * (1.0 - minf(0.8, atk_debuff / 100.0))
 	
-	# 防御削减：确保护甲最低被扒光到 0 点
+	# Defense debuff: ensure armor can be stripped down to a minimum of 0
 	effective_def = maxf(0.0, base_def - (def_debuff * 2.0))
 
 func _physics_process(_delta: float) -> void:
@@ -91,15 +91,15 @@ func _physics_process(_delta: float) -> void:
 		move_and_slide()
 
 func take_damage(incoming_damage: float) -> void:
-	# 护甲减伤公式：经典的英雄联盟/Dota护甲模型
-	# 当有效护甲 (effective_def) 为 0 时，100 / 100 = 1.0 (承受 100% 真实伤害)
-	# 当有效护甲为 100 时，100 / 200 = 0.5 (承受 50% 伤害，减伤一半)
+	# Armor damage reduction formula: classic League of Legends/Dota armor model
+	# When effective_def is 0: 100 / 100 = 1.0 (take 100% true damage)
+	# When effective_def is 100: 100 / 200 = 0.5 (take 50% damage, half reduction)
 	var dmg_multiplier: float = 100.0 / (100.0 + effective_def)
 	
-	# 实际扣血 = 子弹面板伤害 * 护甲乘区
+	# Actual damage taken = incoming bullet damage * armor multiplier
 	current_hp -= (incoming_damage * dmg_multiplier)
 	
-	# 更新悬浮血条 UI
+	# Update floating health bar UI
 	if hp_bar:
 		hp_bar.value = current_hp
 	

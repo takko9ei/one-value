@@ -2,13 +2,13 @@ class_name GameOverUI
 extends CanvasLayer
 
 # =========================================================
-# 【Agent Context】 节点结构说明
+# [Agent Context] Node Structure Explanation
 # =========================================================
-# 本脚本挂载于 GameOverUI (CanvasLayer) 根节点上。
-# 场景期望包含以下子节点：
+# This script is attached to the GameOverUI (CanvasLayer) root node.
+# The scene is expected to contain the following child nodes:
 # - GameOverUI (CanvasLayer) [Root]
-#   ├── RestartButton (Button) : 重新开始按钮
-#   └── BackButton (Button)    : 返回标题按钮 (待实现)
+#   ├── RestartButton (Button) : Button to restart the game
+#   └── BackButton (Button)    : Button to return to the title screen (To be implemented)
 # =========================================================
 
 # =========================================================
@@ -18,46 +18,46 @@ extends CanvasLayer
 @onready var back_button: Button = find_child("BackButton", true, false) as Button
 
 func _ready() -> void:
-	# 初始状态下隐藏自身
+	# Hide itself initially
 	hide()
 	
-	# 确保按钮存在并连接信号
+	# Ensure buttons exist and connect signals
 	if restart_button:
 		restart_button.pressed.connect(_on_restart_button_pressed)
 	else:
-		push_error("GameOverUI: 找不到名为 'RestartButton' 的子节点！")
+		push_error("GameOverUI: Could not find child node named 'RestartButton'!")
 		
 	if back_button:
 		back_button.pressed.connect(_on_back_button_pressed)
 
 func _input(event: InputEvent) -> void:
-	# 只有当 UI 处于显示状态（也就是玩家死了）时，才响应快捷键
+	# Only respond to shortcuts when the UI is visible (i.e., the player is dead)
 	if visible and event is InputEventKey:
-		# 判断是否是物理按键 R，并且是按下的一瞬间
+		# Check if the physical key R is pressed, and it's the exact moment of pressing
 		if event.physical_keycode == KEY_R and event.pressed and not event.echo:
-			# 消耗掉这个输入，防止传递给底层其他节点
+			# Consume this input to prevent passing it to underlying nodes
 			get_viewport().set_input_as_handled()
-			# 直接调用重开逻辑
+			# Directly call the restart logic
 			_on_restart_button_pressed()
 
-# 公开函数，供 Player 死亡时调用
+# Public function, called by Player upon death
 func show_game_over() -> void:
 	show()
-	# 将游戏整体暂停，停止所有未显式设置 PROCESS_MODE_ALWAYS 节点的流程
+	# Pause the entire game, stopping all processes for nodes without explicitly set PROCESS_MODE_ALWAYS
 	get_tree().paused = true
 
 func _on_restart_button_pressed() -> void:
-	# 解除暂停。重开前必须恢复时间流动，否则新实例化的场景将一出生就在暂停状态
+	# Unpause. We must restore time flow before restarting, otherwise the newly instantiated scene will be born paused
 	get_tree().paused = false
 	
-	# 跳转回加点 UI 重新分配
+	# Jump back to the allocation UI to reallocate points
 	if GameManager.has_method("retry_current_level"):
 		GameManager.retry_current_level()
 	else:
-		push_error("GameOverUI: GameManager 中未定义 retry_current_level() 方法！")
+		push_error("GameOverUI: retry_current_level() method is not defined in GameManager!")
 
 func _on_back_button_pressed() -> void:
-	# 解除暂停
+	# Unpause
 	get_tree().paused = false
-	# 返回标题菜单
+	# Return to the title menu
 	get_tree().call_deferred("change_scene_to_file", "res://scene/MainMenu.tscn")

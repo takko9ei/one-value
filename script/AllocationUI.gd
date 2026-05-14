@@ -11,8 +11,8 @@ extends Control
 @onready var slider_container: Control = $Panel/SliderContainer
 
 func _ready() -> void:
-	# 1. 设置关卡显示文本
-	# 安全获取 current_level_index，如果 GameManager 中还没加这个变量，默认按第 0 关算
+	# 1. Set level display text
+	# Safely get current_level_index, default to 0 if not yet added in GameManager
 	var stage_names: Array[String] = [
 		"Stage1: Swarm",
 		"Stage2: Golem",
@@ -29,30 +29,31 @@ func _ready() -> void:
 		else:
 			level_name_label.text = "Stage " + str(current_level + 1)
 	
-	# 2. 监听点数更新信号
+	# 2. Listen to points updated signal
 	if GameManager.has_signal("stats_updated"):
 		GameManager.stats_updated.connect(_update_points_label)
 	
-	# 手动触发一次初始化剩余点数显示
+	# Manually trigger once to initialize remaining points display
 	_update_points_label()
 	
-	# 3. 遍历 SliderContainer 下的所有子节点（即 7 个 HSlider）
+	# 3. Iterate through all child nodes under SliderContainer (i.e., the 7 HSliders)
 	if slider_container:
 		for child: Node in slider_container.get_children():
 			var slider: HSlider = child as HSlider
 			if slider:
 				var stat_key: String = slider.name
-				# 必须确保 slider 的 name 与 GameManager.stats 里的 key 拼写完全一致
+				# Must ensure slider's name exactly matches the key in GameManager.stats
 				if GameManager.stats.has(stat_key):
-					# 根据数据层的真实数值初始化滑块位置
+					# Initialize slider position based on true values from data layer
 					slider.value = float(GameManager.stats[stat_key])
 					
-					# 巧妙地使用 bind 将具体的 slider 实例绑定到回调函数中，避免写 7 个长得一样的函数
+					# Clever use of bind to tie specific slider instance to the callback function
+					# Avoids writing 7 identical functions
 					slider.value_changed.connect(_on_slider_value_changed.bind(slider))
 				else:
-					push_warning("AllocationUI: 字典中不存在与滑块对应的 Key -> " + stat_key)
+					push_warning("AllocationUI: No corresponding Key for slider in dictionary -> " + stat_key)
 					
-	# 4. 连接底部按钮
+	# 4. Connect bottom buttons
 	if start_button:
 		start_button.pressed.connect(_on_start_button_pressed)
 	if quit_button:
@@ -62,35 +63,36 @@ func _update_points_label() -> void:
 	if not points_label:
 		return
 		
-	# 计算已被占用的点数总和
+	# Calculate total points currently occupied
 	var current_total: int = 0
 	for key: String in GameManager.stats:
 		current_total += GameManager.stats[key] as int
 	
-	# 计算剩余的可用点数
+	# Calculate remaining available points
 	var remaining_points: int = GameManager.MAX_TOTAL_POINTS - current_total
 	points_label.text = "SP: " + str(remaining_points)
 
 func _on_slider_value_changed(new_value: float, slider: HSlider) -> void:
 	var stat_key: String = slider.name
 	
-	# 1. 将滑块的新值送往 GameManager 进行安全校验与点数扣减
+	# 1. Send slider's new value to GameManager for safety check and points deduction
 	GameManager.update_stat(stat_key, int(new_value))
 	
-	# 2. 关键同步校验（极重要！）：
-	# 如果剩余 SP 点数不足，GameManager 内部的 clamp 逻辑会拒绝多余的点数增加。
-	# 例如，你想把滑块从 10 拖到 50，但池子里只剩 5 点了，数据层只会加到 15。
-	# 此时虽然底层数据是对的，但你的滑块UI已经被拉到了 50，发生了“脱节假象”。
-	# 所以这里必须强制使用底层真实数据覆写一遍 UI，将它拉回 15。
-	# 【注】：必须用 set_value_no_signal，否则赋值操作又会触发 value_changed 信号导致死循环崩溃！
+	# 2. Critical Sync Check (Extremely Important!):
+	# If remaining SP is insufficient, GameManager's internal clamp logic will reject the excess points.
+	# For example, if you drag the slider from 10 to 50, but only 5 points remain in the pool,
+	# the data layer will only increase it to 15.
+	# The underlying data is correct, but the UI slider is now at 50, causing a "desync illusion".
+	# Therefore, we must forcefully override the UI with the true underlying data, pulling it back to 15.
+	# [Note]: Must use set_value_no_signal, otherwise the assignment triggers value_changed again, causing an infinite loop crash!
 	slider.set_value_no_signal(float(GameManager.stats[stat_key]))
 
 func _on_start_button_pressed() -> void:
 	if GameManager.has_method("load_current_level"):
 		GameManager.load_current_level()
 	else:
-		push_error("AllocationUI: GameManager 中尚未定义 load_current_level() 方法！")
+		push_error("AllocationUI: load_current_level() method is not defined in GameManager!")
 
 func _on_quit_button_pressed() -> void:
-	# 切换回主菜单场景
+	# Switch back to the main menu scene
 	get_tree().change_scene_to_file("res://scene/MainMenu.tscn")
